@@ -8,9 +8,13 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { register } from './controllers/auth.js'
-
-
+import routes from './routes/index.js' 
+import { register } from './controllers/usersController/authController.js'
+import { createPost } from './controllers/postController.js'
+import { verifyToken } from './middleware/auth.js';
+import User from './models/User.js';
+import Post from './models/Post.js';
+import { users, posts } from './data/index.js'
 
 /* CONFIGURATIONS */
 
@@ -46,13 +50,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
-
 /* ROUTES WITH FILES */
 
 
-
 app.post('/auth/register', upload.single('picture'), register)
+app.post('/posts', verifyToken, upload.single('picture'), createPost)
+
+/* ROUTES */
+
+
+app.use('/', routes)
 
 
 
@@ -67,4 +74,10 @@ mongoose.connect(process.env.MONGO_URL, {
     useUnifiedTopology: true,
 }).then(() => {
     app.listen(PORT, () => console.log(`Server listening at: ${PORT}`))
+
+    // User.insertMany(users);
+    // Post.insertMany(posts)
 }).catch(e => console.log(e.message))
+
+
+export default app;
