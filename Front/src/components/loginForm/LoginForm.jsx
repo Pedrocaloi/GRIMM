@@ -63,7 +63,7 @@ const LoginForm = () => {
         // this allows us to send form info with image
         const formData = new FormData();
         for(let value in values){
-            formData.append(values, values[value])
+            formData.append(value, values[value])
         };
         formData.append('picturePath', values.picture.name);
 
@@ -76,6 +76,7 @@ const LoginForm = () => {
         );
         const savedUser = await savedUserResponse.json();
         onSubmit.resetForm();
+        
 
         if(savedUser){
             setPageType('login');
@@ -97,7 +98,7 @@ const LoginForm = () => {
         onSubmit.resetForm();
 
         if(loggedIn){
-            dispatch(
+            dispatch( 
                 setLogin({
                     user: loggedIn.user,
                     token: loggedIn.token,
